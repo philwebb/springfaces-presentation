@@ -1,0 +1,117 @@
+About the app
+	- domain
+	- services
+
+1) /advisor/cities/search
+
+	- intro to the mapping
+	- intro to the model
+
+	- show page
+	- add input text
+	- add button
+
+	click button to show error
+
+	Add to button "spring:/advisor/cities?#{criteria.name}"
+
+	Add new @RequestMapping
+
+
+SUMMARY: @RequestMapping + @Controller as any MVC
+		 Models are exposed to JSF
+		 JSF pages in /WEB-INF/pages
+		 Mix and match JSF and other types easily
+		 Use @PathVariables
+
+
+2) add cities page
+
+	- add select items
+	(view source to show:
+		-ID is used
+		-no converter is needed)
+
+Add a city placeholder page and @RequestMapping
+
+demo search
+
+Add p:autoComplete to the search page 
+reference @Component injected list of cities
+
+Search for a single city to show the dropdown with one item
+
+SUMMARY: Access to @Component beans
+		 AJAX requests work
+		 <s:selectItems> 
+		 	- no converters, inteligent JPA support, Strings, Deduced values
+
+
+3) navigation and skip the dropdown
+
+Change button to spring:@performSearch
+
+	- Show it working and explain how the reverse databinder works
+
+
+Add @NavigationMapping
+
+Remove search button action
+
+Add navigation logic
+
+Sing a single city again
+
+SUMMARY: Implicit navigation with spring: prefix
+		Use any MVC view (eg spring:redirect:www.spring.org)
+		User '@' as a shortcut
+		Use @NavigationMapping
+		 -Specify 'for' or use function name
+		 - Flexible arguments to get at details
+		 - Auto inject model items
+		 - Use @Value("#{variable}") to get any JSF object 
+		 - User f:params to pass arguments
+
+Edit the City page
+
+Add <s:pagedData>
+
+Add @HotelController
+
+make paged data ref "@hotelController.hotel" with params
+
+show link is <a/>
+
+SUMMARY: 
+		 h:link
+		 	- works with "spring:@..."
+		 	- supports bookmarks
+		 PagedData
+		 	- works with Spring Data
+		 	- works with PrimeFaces
+		 	- works with neither
+		 	- sorting .toggleSort
+		 	- Filtering 
+
+Create the write review page
+
+Use decorateAll
+Note the s:selectItems being deduced!
+
+SUMMARY:
+		s:decorateAll for 
+		pass ui:param and ui:define, above is global below is for component
+		Use s:componentInfo to support templating
+
+
+...
+
+
+object message conversion
+
+el resolver (use @Value() access #{controller} access beans and mvc model)
+
+exception handler
+
+converter and validator
+
