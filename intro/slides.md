@@ -314,6 +314,8 @@
 
 <!SLIDE small>
 
+# Example: #
+
 	@@@ xml
 	<p:selectOneMenu label="Trip Type" 
 			value="#{review.tripType}" effect="fade">
@@ -341,9 +343,212 @@
 
 # Pagination #
 
+<!SLIDE bullets incremental>
+
+# JSF Pagination #
+
+* Easy to get wrong
+* Don't fetch all results then display a page
+* Use JPA <tt>setFirstResult()</tt> and <tt>setMaxResult()</tt>
+* UIData <tt>setRows()</tt> and <tt>setFirst()</tt> not enough
+
+<!SLIDE bullets incremental>
+
+# Using <tt><s:pagedData></tt> #
+
+* Creates lazy loading paged <tt>DataModel</tt>
+* Part of your page mark-up
+* WARNING: Not quite MVC...
+* ... but easy to use
+
+<!SLIDE small>
+
+# Example: #
+
+Expose paged data under <tt>#{myDataModel}</tt>
+
+	@@@ xml
+	<s:pagedData
+		var="myDataModel" pageSize="20"
+
+
+
+
+
+
+	 />
+
+<!SLIDE small>
+
+# Example: #
+
+Obtain a page of data calling <tt>userRepository.findByLastName</tt>
+
+	@@@ xml
+	<s:pagedData
+		var="myDataModel" pageSize="20"
+		value="#{userRepository.findByLastName(
+	    	backingBean.lastName, 
+			...
+			..."
+
+
+	 />
+ 
+<!SLIDE small>
+
+# Example: #
+
+Details of the page to return available in <tt>pageRequest</tt>
+
+	@@@ xml
+	<s:pagedData
+		var="myDataModel" pageSize="20"
+		value="#{userRepository.findByLastName(
+	    	backingBean.lastName, 
+	    	pageRequest.offset, 
+	    	pageRequest.pageSize)}"
+
+
+	 />
+ 
+<!SLIDE small>
+
+# Example: #
+
+Call <tt>userRepository.countByLastName</tt> for the total row count 
+
+	@@@ xml
+	<s:pagedData
+		var="myDataModel" pageSize="20"
+		value="#{userRepository.findByLastName(
+	    	backingBean.lastName, 
+	    	pageRequest.offset, 
+	    	pageRequest.pageSize)}"
+		rowCount="#{userRepository.countByLastName(
+	  		backingBean.lastName)}" 
+	 />
+ 
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ xml
+	<t:dataTable 
+			value="#{myDataModel}" 
+			rows="#{myDataModel.pageSize}" 
+    		var="item">
+  		<t:column>
+			<h:outputText value="#{item.name}" />
+  		</t:column>
+  		<t:dataScroller paginator="true" 
+  				paginatorMaxPages="9" />
+	</t:dataTable>
+
+<!SLIDE bullets incremental>
+
+# Spring Data #
+
+* Pagination and Sorting out the box
+* <tt>#{pageRequest}</tt> implements <tt>Pageable</tt> Interface
+* <tt>PagedDataModel</tt> has <tt>setSortColumn()</tt> and <tt>toggleSort()</tt>
+* Optional dependency, degrades gracefully
+
+<!SLIDE bullets incremental>
+
+# PrimeFaces #
+
+* Use PrimeFaces <tt>p:dataTable</tt> to quickly add paginator
+* <tt>#{dataModel}</tt> extends PrimeFaces <tt>LazyDataModel</tt>
+* Again, optional and degrades gracefully
+
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ java
+	Page<HotelSummary> getHotels(City city, 
+		Pageable pageable);
+
+<pre/>
+
+	@@@ xml
+	<s:pagedData value="#{cityService.getHotels(
+			city, pageRequest)}" 
+		sortColumn="averageRating" 
+		sortAscending="#{false}" 
+		var="hotels"/>
+
+<!SLIDE small>
+
+# Example: #
+	
+	@@@ xml
+	<p:dataTable value="#{hotels}" paginator="true" 
+		rows="#{hotels.pageSize}" var="hotel">
+			<p:column headerText="Average Rating" 
+				sortBy="#{hotel.averageRating}">
+					<h:outputText 
+						value="#{hotel.averageRating}"/>
+			</p:column>
+	</p:dataTable>
+
+<!SLIDE subsection>
+
+# Demo #
+
 <!SLIDE subsection>
 
 # Templates #
+
+<!SLIDE bullets incremental>
+
+# JSF Templates #
+
+* Good support since JSF 2.0
+* Use <tt><ui:composition></tt> and <tt><ui:decorate></tt>
+* Can get repetitive, especially for forms
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ xml
+	<ui:composition>
+		<div class="formElement">
+			<span class="formLabel">
+				<h:outputLabel for="#{for}" 
+					label="#{label}">
+			</span>
+			<ui:insert/>
+		</div>
+	</ui:composition>
+
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ xml
+	<ui:decorate template="/WEB-INF/layout/form.xhtml">
+		<h:inputText id="firstName" label="First Name" 
+			value="#{bean.firstName}"/>
+		<ui:param name="label" value="First Name"/>
+		<ui:param name="for" value="firstName"/>
+	</ui:decorate>
+
+	<ui:decorate template="/WEB-INF/layout/form.xhtml">
+		<h:inputText id="lastName" label="Last Name" 
+			value="#{bean.lastName}"/>
+		<ui:param name="label" value="Last Name"/>
+		<ui:param name="for" value="lastName"/>
+	</ui:decorate>
+
+	<!-- More form elements -->
+
+
 
 <!SLIDE subsection>
 
