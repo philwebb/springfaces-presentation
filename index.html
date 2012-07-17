@@ -1,0 +1,840 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Integrating Spring and JavaServer Faces</title>
+
+  <meta name="viewport" content="width=device-width"/>
+
+  <link rel="stylesheet" href="./css/reset.css" type="text/css"/>
+  <link rel="stylesheet" href="./css/showoff.css" type="text/css"/>
+
+  <script type="text/javascript" src="./js/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="./js/jquery.cycle.all.js"></script>
+	<script type="text/javascript" src="./js/jquery-print.js"></script>
+  <script type="text/javascript" src="./js/jquery.batchImageLoad.js"></script>
+
+  <script type="text/javascript" src="./js/jquery.doubletap-0.1.js"></script>
+
+  <script type="text/javascript" src="./js/fg.menu.js"></script>
+  <script type="text/javascript" src="./js/showoff.js"></script>
+  <script type="text/javascript" src="./js/jTypeWriter.js"> </script>
+  <script type="text/javascript" src="./js/sh_main.min.js"></script>
+  <script type="text/javascript" src="./js/core.js"></script>
+  <script type="text/javascript" src="./js/showoffcore.js"></script>
+  <script type="text/javascript" src="./js/coffee-script.js"></script>
+
+  <link type="text/css" href="./css/fg.menu.css" media="screen" rel="stylesheet" />
+  <link type="text/css" href="./css/theme/ui.all.css" media="screen" rel="stylesheet" />
+  <link type="text/css" href="./css/sh_style.css" rel="stylesheet" >
+
+  
+
+  
+
+  <script type="text/javascript">
+  $(function(){
+      setupPreso(false, './');
+  });
+  </script>
+
+</head>
+
+<body>
+
+<a tabindex="0" href="#search-engines" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="navmenu"><span class="ui-icon ui-icon-triangle-1-s"></span>slides</a>
+<div id="navigation" class="hidden"></div>
+
+<div id="help">
+  <table>
+    <tr><td class="key">z, ?</td><td>toggle help (this)</td></tr>
+    <tr><td class="key">space, &rarr;</td><td>next slide</td></tr>
+    <tr><td class="key">shift-space, &larr;</td><td>previous slide</td></tr>
+    <tr><td class="key">d</td><td>toggle debug mode</td></tr>
+    <tr><td class="key">## &lt;ret&gt;</td><td>go to slide #</td></tr>
+    <tr><td class="key">c, t</td><td>table of contents (vi)</td></tr>
+    <tr><td class="key">f</td><td>toggle footer</td></tr>
+    <tr><td class="key">r</td><td>reload slides</td></tr>
+    <tr><td class="key">n</td><td>toggle notes</td></tr>
+    <tr><td class="key">p</td><td>run preshow</td></tr>
+  </table>
+</div>
+
+<div class="buttonNav">
+  <input type="submit" onClick="prevStep();" value="prev"/>
+  <input type="submit" onClick="nextStep();" value="next"/>
+</div>
+
+<div id="preso">loading presentation...</div>
+<div id="footer">
+  <span id="slideInfo"></span>
+  <span id="debugInfo"></span>
+  <span id="notesInfo"></span>
+</div>
+
+<div id="slides" class="offscreen" style="display:none;">
+<div class="slide" data-transition="none">
+  <div class="content subsection" ref="slides/slides/1">
+<h1>Integrating Spring and JavaServer Faces</h1>
+
+<br><br>
+
+
+<h2>Phillip Webb</h2>
+
+<h3><em>SpringSource, VMware</em></h3></br>
+</br>
+</div>
+</div><div class="slide" data-transition="none"><div class="content" ref="slides/slides/2">
+<h1>Overview</h1></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="slides/slides/3">
+<h1>The demo application</h1></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/4">
+<h1>Spring in control</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/5">
+<h1>How?</h1>
+
+<ul>
+<li>JSF becomes the 'V' in MVC</li>
+<li><tt>@Controller</tt> and <tt>@RequestMapping</tt> like any other Spring MVC</li>
+<li>Put your XHTML in <tt>/WEB-INF/pages/</tt></li>
+<li>Use all Spring goodness (<tt>@PathVariable</tt>, <tt>@RequestParam</tt> etc)</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/6">
+<h1>Why?</h1>
+
+<ul>
+<li>Easy to use MVC programming model</li>
+<li>Powerful JSF component libraries</li>
+<li>Simple to mix JSF with other view technologies</li>
+<li>AJAX out the box</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/7">
+<h1>Example</h1>
+
+<pre class="sh_java"><code>@Controller
+public class CityController {
+
+    @RequestMapping("/advisor/{country}/{name}")
+    public String showCity(
+            @PathVariable String country, 
+            @PathVariable String name, 
+            Model model) {
+
+        model.addAttribute(
+            cityService.getCity(name, country));
+
+        return "city";
+    }
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/8">
+<h1>/WEB-INF/pages/city.xhtml</h1>
+
+<pre class="sh_xml"><code>&lt;!DOCTYPE html 
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtm..."&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"&gt;
+
+    &lt;!-- Page content --&gt;
+
+&lt;/html&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/9">
+<h1>Reaching the Beans</h1></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/10">
+<h1>Spring Beans available using EL</h1>
+
+<pre class="sh_java"><code>@Component  
+public class ReviewUtils {
+    public int getRating(Review review) {
+        return review.getRating().ordinal();
+    }
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>value="#{reviewUtils.getRating(rating)}"</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/11">
+<h1>Model as well</h1>
+
+<pre class="sh_java"><code>@RequestMapping("/advisor/cities/search")
+public String enterSearchDetails(Model model) {
+    model.addAttribute(new CitySearchCriteria());
+    return "citysearch";
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>value="#{citySearchCriteria.name}"</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/12">
+<h1>Special implicit variables</h1>
+
+<ul>
+<li><tt>controller</tt> - The MVC controller</li>
+<li><tt>handler</tt> - The MVC handler</li>
+<li><tt>model</tt> - The model map</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/13">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>@Controller
+public class CityController {
+    public String getTime() {
+        return new Date();
+    }
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>value="#{controller.time}"</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/14">
+<h1>Demo</h1></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/15">
+<h1>Navigation</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/16">
+<h1>Implicit JSF navigation</h1>
+
+<ul>
+<li>Use <tt>spring:</tt> prefix with JSF implicit navigation</li>
+<li>Reference any MVC view</li>
+<li>Same as String return from <tt>@RequestMapping</tt></li>
+<li>Must have JSF implicit views enabled</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/17">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;h:commandButton value="Go" 
+    action="spring:
+      redirect:http://www.springsource.org"/&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/18">
+<h1>Navigate to <tt>@RequestMapping</tt></h1>
+
+<ul>
+<li>Special <tt>'@'</tt> prefix redirects to other <tt>@RequestMapping</tt></li>
+<li>URL is built for you</li>
+<li>Refer to the current controller <tt>'@performSearch'</tt></li>
+<li>Or other controller <tt>'@cityController.performSearch'</tt></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/19">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>@RequestMapping("/advisor/cities/search")
+public String enterSearchDetails(Model model) {
+    model.addAttribute(new CitySearchCriteria());
+    return "citysearch";
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;h:commandButton value="Go" 
+    action="spring:@enterSearchDetails"/&gt;</code></pre>
+
+<h2>Redirects to: <strong><tt>/app/spring/advisor/cities/search</tt></strong></h2></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/20">
+<h1>Complex URLs</h1>
+
+<ul>
+<li>Both <tt>@RequestParam</tt> and <tt>@PathVariable</tt> respected</li>
+<li>Model objects picked by type</li>
+<li>Or use <tt>f:param</tt> tags</li>
+<li>Works with <tt>h:link</tt> to create bookmarkable URLs</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/21">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>@RequestMapping("/advisor/cities")
+public String performSearch(
+    CitySearchCriteria searchCriteria) {
+
+    String name = searchCriteria.getName();
+    int resultsPerPage = searchCriteria.getPerPage();
+    ...</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;h:commandButton value="Go" 
+    action="spring:@performSearch"/&gt;</code></pre>
+
+<h2>Redirects to: <strong><tt>/app/spring/advisor/cities?name=vegas&amp;perPage=10</tt></strong></h2></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/22">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>@RequestMapping("/advisor/{country}/{city}/{name}")
+public String hotel(@PathVariable String country, 
+    @PathVariable String city, @PathVariable String name) {
+    ...</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;h:link value="#{hotel.name}" 
+        outcome="spring:@hotelController.hotel"&gt;
+ &lt;f:param name="country" value="#{hotel.city.country}"/&gt;
+ &lt;f:param name="city" value="#{hotel.city.name}"/&gt;
+ &lt;f:param name="name" value="#{hotel.name}"/&gt;
+&lt;/h:link&gt;</code></pre>
+
+<h2>Links to: <strong><tt>/app/spring/advisor/uk/bath/travelodge</tt></strong></h2></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/23">
+<h1>Programmatic Navigation</h1>
+
+<ul>
+<li>Use <tt>@NavigationMapping</tt> in your controller</li>
+<li>Name of the method is the JSF 'action'</li>
+<li>Model arguments matched based on type</li>
+<li>Use <tt>@Value('#{expression}')</tt> arguments to access JSF objects</li>
+<li>Use <tt>NavigationContext</tt> argument for context information</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/24">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>@NavigationMapping
+public Object onSearch(CitySearchCriteria criteria) {
+
+    City city = findSingleCity(criteria);
+
+    if (city != null) {
+        ExtendedModelMap m = new ExtendedModelMap()
+          .addAttribute("country", city.getCountry())
+          .addAttribute("name", city.getName());
+        return new NavigationOutcome("@showCity", m);
+    }
+
+    return "@performSearch";
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/25">
+<h1>Demo</h1></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/26">
+<h1>Select Items</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/27">
+<h1>Select Items</h1>
+
+<ul>
+<li>Use in JSF for lists, radio buttons and combo boxes</li>
+<li>Drop-in replacements for <tt>f:selectItems</tt></li>
+<li>No <tt>f:converter</tt> required</li>
+<li>JPA <tt>@ID</tt> used</li>
+<li>Quickly add 'Please Select' option</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/28">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;p:selectOneMenu value="#{model.selectedCity}" 
+        effect="fade" required="true"&gt;
+    &lt;s:selectItems value="#{cities}"/&gt;
+&lt;/p:selectOneMenu&gt;</code></pre>
+
+<p><p/></p>
+
+<h2>Produces the following HTML:</h2>
+
+<pre class="sh_html"><code>&lt;select&gt;
+    &lt;option selected="selected" 
+        value=""&gt;--- Please Select ---&lt;/option&gt;
+    &lt;option value="16"&gt;Miami&lt;/option&gt;
+    &lt;option value="17"&gt;Melbourne&lt;/option&gt;
+&lt;/select&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/29">
+<h1>Deduced Select Items</h1>
+
+<ul>
+<li><tt>Enum</tt> and <tt>Boolean</tt> items can be deduced</li>
+<li><tt>Boolean</tt> gives <tt>'Yes'</tt>, <tt>'No'</tt> options</li>
+<li><tt>Enum</tt> uses <tt>Enum.values()</tt></li>
+<li>No <tt>s:selectItems</tt> value is required</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/30">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;p:selectOneMenu label="Trip Type" 
+        value="#{review.tripType}" effect="fade"&gt;
+    &lt;s:selectItems/&gt;
+&lt;/p:selectOneMenu&gt;</code></pre>
+
+<h2>Produces the following HTML:</h2>
+
+<pre class="sh_html"><code>&lt;select&gt;
+    &lt;option selected="selected" value=""&gt;
+            --- Please Select ---&lt;/option&gt;
+    &lt;option value="BUSINESS"&gt;Business&lt;/option&gt;
+    &lt;option value="COUPLES"&gt;Couples&lt;/option&gt;
+    &lt;option value="FAMILY"&gt;Family&lt;/option&gt;
+    &lt;option value="FRIENDS"&gt;Friends&lt;/option&gt;
+    &lt;option value="SOLO"&gt;Solo&lt;/option&gt;
+&lt;/select&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/31">
+<h1>Demo</h1></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/32">
+<h1>Pagination</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/33">
+<h1>JSF Pagination</h1>
+
+<ul>
+<li>Easy to get wrong</li>
+<li>Don't fetch all results then display a page</li>
+<li>Use JPA <tt>setFirstResult()</tt> and <tt>setMaxResult()</tt></li>
+<li>UIData <tt>setRows()</tt> and <tt>setFirst()</tt> not enough</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/34">
+<h1>Using <tt>&lt;s:pagedData&gt;</tt></h1>
+
+<ul>
+<li>Creates lazy loading paged <tt>DataModel</tt></li>
+<li>Part of your page mark-up</li>
+<li>WARNING: Not quite MVC...</li>
+<li>... but easy to use</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/35">
+<h1>Example:</h1>
+
+<p>Expose paged data under <tt>#{myDataModel}</tt></p>
+
+<pre class="sh_xml"><code>&lt;s:pagedData
+    var="myDataModel" pageSize="20"
+
+
+
+
+
+
+ /&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/36">
+<h1>Example:</h1>
+
+<p>Obtain a page of data calling <tt>userRepository.findByLastName</tt></p>
+
+<pre class="sh_xml"><code>&lt;s:pagedData
+    var="myDataModel" pageSize="20"
+    value="#{userRepository.findByLastName(
+        backingBean.lastName, 
+        ...
+        ..."
+
+
+ /&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/37">
+<h1>Example:</h1>
+
+<p>Details of the page to return available in <tt>pageRequest</tt></p>
+
+<pre class="sh_xml"><code>&lt;s:pagedData
+    var="myDataModel" pageSize="20"
+    value="#{userRepository.findByLastName(
+        backingBean.lastName, 
+        pageRequest.offset, 
+        pageRequest.pageSize)}"
+
+
+ /&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/38">
+<h1>Example:</h1>
+
+<p>Call <tt>userRepository.countByLastName</tt> for the total row count</p>
+
+<pre class="sh_xml"><code>&lt;s:pagedData
+    var="myDataModel" pageSize="20"
+    value="#{userRepository.findByLastName(
+        backingBean.lastName, 
+        pageRequest.offset, 
+        pageRequest.pageSize)}"
+    rowCount="#{userRepository.countByLastName(
+        backingBean.lastName)}" 
+ /&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/39">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;t:dataTable 
+        value="#{myDataModel}" 
+        rows="#{myDataModel.pageSize}" 
+        var="item"&gt;
+    &lt;t:column&gt;
+        &lt;h:outputText value="#{item.name}" /&gt;
+    &lt;/t:column&gt;
+    &lt;t:dataScroller paginator="true" 
+            paginatorMaxPages="9" /&gt;
+&lt;/t:dataTable&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/40">
+<h1>Spring Data</h1>
+
+<ul>
+<li>Pagination and Sorting out the box</li>
+<li><tt>#{pageRequest}</tt> implements <tt>Pageable</tt> Interface</li>
+<li><tt>PagedDataModel</tt> has <tt>setSortColumn()</tt> and <tt>toggleSort()</tt></li>
+<li>Optional dependency, degrades gracefully</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/41">
+<h1>PrimeFaces</h1>
+
+<ul>
+<li>Use PrimeFaces <tt>p:dataTable</tt> to quickly add paginator</li>
+<li><tt>#{dataModel}</tt> extends PrimeFaces <tt>LazyDataModel</tt></li>
+<li>Again, optional and degrades gracefully</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/42">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>Page&lt;HotelSummary&gt; getHotels(City city, 
+    Pageable pageable);</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;s:pagedData value="#{cityService.getHotels(
+        city, pageRequest)}" 
+    sortColumn="averageRating" 
+    sortAscending="#{false}" 
+    var="hotels"/&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/43">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;p:dataTable value="#{hotels}" paginator="true" 
+    rows="#{hotels.pageSize}" var="hotel"&gt;
+        &lt;p:column headerText="Average Rating" 
+            sortBy="#{hotel.averageRating}"&gt;
+                &lt;h:outputText 
+                    value="#{hotel.averageRating}"/&gt;
+        &lt;/p:column&gt;
+&lt;/p:dataTable&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/44">
+<h1>Demo</h1></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/45">
+<h1>Templates</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/46">
+<h1>JSF Templates</h1>
+
+<ul>
+<li>Good support since JSF 2.0</li>
+<li>Use <tt>&lt;ui:composition&gt;</tt> and <tt>&lt;ui:decorate&gt;</tt></li>
+<li>Can get repetitive, especially for forms</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/47">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;ui:composition&gt;
+    &lt;div class="formElement"&gt;
+        &lt;span class="formLabel"&gt;
+            &lt;h:outputLabel for="#{for}" 
+                label="#{label}
+                  #{showAsterisk ? ' *' : ''}"&gt;
+        &lt;/span&gt;
+        &lt;ui:insert/&gt;
+    &lt;/div&gt;
+&lt;/ui:composition&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/48">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;ui:decorate template="/WEB-INF/layout/form.xhtml"&gt;
+    &lt;h:inputText id="firstName" label="First Name" 
+        value="#{bean.firstName}" required="false"/&gt;
+    &lt;ui:param name="label" value="First Name"/&gt;
+    &lt;ui:param name="for" value="firstName"/&gt;
+    &lt;ui:param name="showAsterisk" value="true"/&gt;        
+&lt;/ui:decorate&gt;
+
+&lt;ui:decorate template="/WEB-INF/layout/form.xhtml"&gt;
+    &lt;h:inputText id="lastName" label="Last Name" 
+        value="#{bean.lastName}" required="true"/&gt;
+    &lt;ui:param name="label" value="Last Name"/&gt;
+    &lt;ui:param name="for" value="lastName"/&gt;
+    &lt;ui:param name="showAsterisk" value="true"/&gt;        
+&lt;/ui:decorate&gt;
+&lt;!-- More form elements --&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/49">
+<h1>Component Info</h1>
+
+<ul>
+<li>Use <tt>&lt;s:componentInfo&gt;</tt> to introspect component details</li>
+<li><tt>isValid()</tt>, <tt>isRequired()</tt>, <tt>getLabel()</tt>, <tt>getFor()</tt></li>
+<li>Child is used so no need to reference component by ID</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/50">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;ui:composition&gt;
+    &lt;s:componentInfo var="info"&gt;
+        &lt;div class="formElement"&gt;
+            &lt;span class="#{info.valid ? 'formLabel' : 
+                    'formErrorLabel'}"&gt;
+                &lt;h:outputLabel for="#{info.for}" 
+                    label="#{info.label}
+                      #{info.required ? ' *' : ''}"&gt;
+            &lt;/span&gt;
+            &lt;ui:insert/&gt;
+        &lt;/div&gt;
+    &lt;/s:componentInfo&gt;
+&lt;/ui:composition&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/51">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;ui:decorate template="/WEB-INF/layout/form.xhtml"&gt;
+    &lt;h:inputText id="firstName" label="First Name" 
+        value="#{bean.firstName}" required="false"/&gt;
+&lt;/ui:decorate&gt;
+
+&lt;ui:decorate template="/WEB-INF/layout/form.xhtml"&gt;
+    &lt;h:inputText id="lastName" label="Last Name" 
+        value="#{bean.lastName}" required="true"/&gt;
+&lt;/ui:decorate&gt;
+&lt;!-- More form elements --&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/52">
+<h1>Decorate All</h1>
+
+<ul>
+<li>Use <tt>&lt;s:decorateAll&gt;</tt> apply template to each child component</li>
+<li>Still supports <tt>&lt;ui:param/&gt;</tt> and <tt>&lt;ui:define/&gt;</tt> tags</li>
+<li>Below the component to apply just once</li>
+<li>Or at the very top to apply to all</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/53">
+<h1>Example:</h1>
+
+<pre class="sh_xml"><code>&lt;s:decorateAll template="/WEB-INF/layout/form.xhtml"&gt;
+
+    &lt;h:inputText id="firstName" label="First Name" 
+        value="#{bean.firstName}" required="false"/&gt;
+
+    &lt;h:inputText id="lastName" label="Last Name" 
+        value="#{bean.lastName}" required="true"/&gt;
+
+    &lt;!-- More form elements --&gt;
+&lt;/s:decorateAll&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/54">
+<h1>Demo</h1></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/55">
+<h1>Internationalization</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/56">
+<h1>Message Source</h1>
+
+<ul>
+<li>Use <tt>&lt;s:messageSource&gt;</tt> instead of <tt>&lt;f:loadBundle&gt;</tt></li>
+<li>Works with Spring <tt>MessageSource</tt></li>
+<li>Message keys includes page ID to prevent name clashes</li>
+<li>Shortcuts to resolve parameters</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/57">
+<h1>Example:</h1>
+
+<pre class="sh_properties"><code>pages.message.simple.welcome=
+    Welcome to {1} with {0}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;h:outputFormat value="#{messages.welcome}"&gt;
+    &lt;f:param value="Spring"/&gt;
+    &lt;f:param value="JSF"/&gt;
+&lt;/h:outputFormat&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/58">
+<h1>Example:</h1>
+
+<pre class="sh_properties"><code>pages.message.simple.welcome=
+    Welcome to {1} with {0}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;h:outputText 
+  value="#{messages.welcome['Spring']['JSF']}"/&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/59">
+<h1>Object Message Source</h1>
+
+<ul>
+<li><p>New <tt>ObjectMessageSource</tt> extends Spring <tt>MessageSource</tt></p></li>
+<li><pre class="sh_java"><code>String getMessage(Object object, 
+    Object[] args, Locale locale) </code></pre></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/60">
+<h1>Example:</h1>
+
+<pre class="sh_java"><code>package org.example;
+public class ExampleObject {
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;h:outputText 
+    value="#{messages[exampleInstance]}"/&gt;</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_properties"><code>org.example.ExampleObject=example</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/61">
+<pre class="sh_java"><code>package org.springframework.springfaces.
+                traveladvisor.domain;
+public enum TripType {
+    BUSINESS, 
+    COUPLES
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_xml"><code>&lt;p:selectOneMenu label="Trip Type" 
+        value="#{review.tripType}" effect="fade"&gt;
+    &lt;s:selectItems/&gt;
+&lt;/p:selectOneMenu&gt;</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_properties"><code>org.springframework.springfaces.traveladvisor.
+    domain.TripType.BUSINESS=Business
+org.springframework.springfaces.traveladvisor.
+    domain.TripType.COUPLES=Couples</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/62">
+<pre class="sh_java"><code>package org.example;
+public class PersonName {
+    public String getFirst() {
+    }
+
+    public String getLast() {
+    }
+}</code></pre>
+
+<p><p/></p>
+
+<pre class="sh_properties"><code>org.example.PersonName=Name is {first} {last}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/63">
+<h1>Loose Ends</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/64">
+<h1>JSF Converters</h1>
+
+<ul>
+<li>Spring Beans can be JSF Converters</li>
+<li>ID of the bean is the name of the converter</li>
+<li>Use <tt>@ForClass</tt> annotation to register for a class</li>
+<li>Generic variant of <tt>Converter</tt> also available</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/65">
+<pre class="sh_java"><code>@Component
+@ForClass
+public class ExampleConverter implements 
+                        Converter&lt;MyClass&gt; {
+
+public MyClass getAsObject(FacesContext context, 
+        UIComponent component, String value) {
+    // ...
+}
+
+public String getAsString(FacesContext context, 
+        UIComponent component, MyClass value) {
+    // ...
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/66">
+<h1>MVC Converters</h1>
+
+<ul>
+<li>JSF Converters will be used in MVC <tt>@Controller</tt></li>
+<li>Converters are located from the argument class</li>
+<li>Or use <tt>@FacesConverterId</tt></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/67">
+<pre class="sh_java"><code>@Controller
+public class ConverterExampleController {
+
+    @RequestMapping("/converter/facesbyid")
+    public Model facesById(
+        @RequestParam 
+        @FacesConverterId("byId") 
+        ConvertedObject value) {
+    }
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/68">
+<h1>Validators</h1>
+
+<ul>
+<li>Spring Beans can be JSF Validators</li>
+<li>ID of the bean is the name of the validator</li>
+<li>Use <tt>@ForClass</tt> annotation to register for a class</li>
+<li>Generic variant of <tt>Validator</tt> also available</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/69">
+<pre class="sh_java"><code>@Component
+@ForClass
+public class ExampleValidator implements 
+                        Validator&lt;MyClass&gt; {
+
+    public void validate(FacesContext context, 
+            UIComponent component, MyClass value) 
+            throws ValidatorException {
+        // ...
+    }
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/70">
+<h1>Exception Handling</h1>
+
+<ul>
+<li>Spring beans can handle JSF Exceptions</li>
+<li>Use <tt>ExceptionHandler</tt> interface instead of JSF Class</li>
+<li>MVC <tt>@ExceptionHandler</tt> can also be used</li>
+<li>Exception messages can be displayed using <tt>ObjectMessageSource</tt></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/71">
+<pre class="sh_java"><code>@Component
+@Order(100)
+public class MyExceptionHandler implements 
+                ExceptionHandler&lt;MyException&gt; {
+
+    boolean handle(MyException exception, 
+              ExceptionQueuedEvent event) 
+              throws Exception {
+
+        // if handled return true
+
+    }
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/72">
+<pre class="sh_java"><code>@Controller
+public class ExampleController {
+
+    // ... 
+
+    @ExceptionHandler
+    public String handleFacesView(MyException e) {
+        return "redirect:error";
+    }
+}</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content small" ref="slides/slides/73">
+<pre class="sh_properties"><code># messages_en.properties
+com.corp.product.exception.MyException=
+    My Localized Exception Message</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/74">
+<h1>Summary</h1></div>
+</div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="slides/slides/75">
+<h1>Summary</h1>
+
+<ul>
+<li>Get really deep JSF/Spring integration</li>
+<li>Flexibility of Spring MVC</li>
+<li>Convenience of JSF Libraries</li>
+<li>Apache 2.0 Licensed</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content subsection" ref="slides/slides/76">
+<h1>Thank You</h1>
+
+<p>http://github.com/philwebb/springfaces/</p></div>
+</div></div>
+
+</body>
+</html>
