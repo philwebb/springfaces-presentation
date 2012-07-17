@@ -21,7 +21,7 @@
 
 # How? #
 
-* JSF becomes the V in MVC
+* JSF becomes the 'V' in MVC
 * <tt>@Controller</tt> and <tt>@RequestMapping</tt> like any other Spring MVC
 * Put your XHTML in <tt>/WEB-INF/pages/</tt>
 * Use all Spring goodness (<tt>@PathVariable</tt>, <tt>@RequestParam</tt> etc)
@@ -91,7 +91,7 @@
 		}
 	}
 
-<pre/>
+<p/>
 	@@@ xml
 	value="#{reviewUtils.getRating(rating)}"
 
@@ -105,7 +105,7 @@
 		model.addAttribute(new CitySearchCriteria());
 		return "citysearch";
 	}
-<pre/>
+<p/>
 	@@@ xml
 	value="#{citySearchCriteria.name}"
 
@@ -128,7 +128,7 @@
 			return new Date();
 		}
 	}
-<pre/>
+<p/>
 	@@@ xml
 	value="#{controller.time}"
 
@@ -177,7 +177,7 @@
 		model.addAttribute(new CitySearchCriteria());
 		return "citysearch";
 	}
-<pre/>
+<p/>
 	@@@ xml
 	<h:commandButton value="Go" 
 		action="spring:@enterSearchDetails"/>
@@ -206,7 +206,7 @@
 		int resultsPerPage = searchCriteria.getPerPage();
 		...
 
-<pre/>
+<p/>
 	@@@ xml
 	<h:commandButton value="Go" 
 		action="spring:@performSearch"/>
@@ -223,7 +223,7 @@
 	public String hotel(@PathVariable String country, 
 		@PathVariable String city, @PathVariable String name) {
 		...
-<pre/>
+<p/>
 	@@@ xml
 	<h:link value="#{hotel.name}" 
 			outcome="spring:@hotelController.hotel">
@@ -291,7 +291,7 @@
 			effect="fade" required="true">
 		<s:selectItems value="#{cities}"/>
 	</p:selectOneMenu>
-<pre/>
+<p/>
 
 ## Produces the following HTML: ##
 
@@ -472,7 +472,7 @@ Call <tt>userRepository.countByLastName</tt> for the total row count
 	Page<HotelSummary> getHotels(City city, 
 		Pageable pageable);
 
-<pre/>
+<p/>
 
 	@@@ xml
 	<s:pagedData value="#{cityService.getHotels(
@@ -520,7 +520,8 @@ Call <tt>userRepository.countByLastName</tt> for the total row count
 		<div class="formElement">
 			<span class="formLabel">
 				<h:outputLabel for="#{for}" 
-					label="#{label}">
+					label="#{label}
+					  #{showAsterisk ? ' *' : ''}">
 			</span>
 			<ui:insert/>
 		</div>
@@ -534,31 +535,337 @@ Call <tt>userRepository.countByLastName</tt> for the total row count
 	@@@ xml
 	<ui:decorate template="/WEB-INF/layout/form.xhtml">
 		<h:inputText id="firstName" label="First Name" 
-			value="#{bean.firstName}"/>
+			value="#{bean.firstName}" required="false"/>
 		<ui:param name="label" value="First Name"/>
 		<ui:param name="for" value="firstName"/>
+		<ui:param name="showAsterisk" value="true"/>		
 	</ui:decorate>
 
 	<ui:decorate template="/WEB-INF/layout/form.xhtml">
 		<h:inputText id="lastName" label="Last Name" 
-			value="#{bean.lastName}"/>
+			value="#{bean.lastName}" required="true"/>
 		<ui:param name="label" value="Last Name"/>
 		<ui:param name="for" value="lastName"/>
+		<ui:param name="showAsterisk" value="true"/>		
 	</ui:decorate>
-
 	<!-- More form elements -->
 
+<!SLIDE bullets incremental>
 
+# Component Info #
+
+* Use <tt><s:componentInfo></tt> to introspect component details
+* <tt>isValid()</tt>, <tt>isRequired()</tt>, <tt>getLabel()</tt>, <tt>getFor()</tt>
+* Child is used so no need to reference component by ID
+
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ xml
+	<ui:composition>
+		<s:componentInfo var="info">
+			<div class="formElement">
+				<span class="#{info.valid ? 'formLabel' : 
+						'formErrorLabel'}">
+					<h:outputLabel for="#{info.for}" 
+						label="#{info.label}
+						  #{info.required ? ' *' : ''}">
+				</span>
+				<ui:insert/>
+			</div>
+		</s:componentInfo>
+	</ui:composition>
+
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ xml
+	<ui:decorate template="/WEB-INF/layout/form.xhtml">
+		<h:inputText id="firstName" label="First Name" 
+			value="#{bean.firstName}" required="false"/>
+	</ui:decorate>
+
+	<ui:decorate template="/WEB-INF/layout/form.xhtml">
+		<h:inputText id="lastName" label="Last Name" 
+			value="#{bean.lastName}" required="true"/>
+	</ui:decorate>
+	<!-- More form elements -->
+
+<!SLIDE bullets incremental>
+
+# Decorate All #
+
+* Use <tt><s:decorateAll></tt> apply template to each child component
+* Still supports <tt><ui:param/></tt> and <tt><ui:define/></tt> tags
+* Below the component to apply just once
+* Or at the very top to apply to all
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ xml
+	<s:decorateAll template="/WEB-INF/layout/form.xhtml">
+
+		<h:inputText id="firstName" label="First Name" 
+			value="#{bean.firstName}" required="false"/>
+	
+		<h:inputText id="lastName" label="Last Name" 
+			value="#{bean.lastName}" required="true"/>
+	
+		<!-- More form elements -->
+	</s:decorateAll>
+
+<!SLIDE subsection>
+
+# Demo #
 
 <!SLIDE subsection>
 
 # Internationalization #
 
+<!SLIDE bullets incremental>
+
+# Message Source #
+
+* Use <tt><s:messageSource></tt> instead of <tt><f:loadBundle></tt>
+* Works with Spring <tt>MessageSource</tt>
+* Message keys includes page ID to prevent name clashes
+* Shortcuts to resolve parameters
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ properties
+	pages.message.simple.welcome=
+		Welcome to {1} with {0}
+<p/>
+	@@@ xml
+	<h:outputFormat value="#{messages.welcome}">
+		<f:param value="Spring"/>
+		<f:param value="JSF"/>
+	</h:outputFormat>
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ properties
+	pages.message.simple.welcome=
+		Welcome to {1} with {0}
+<p/>
+	@@@ xml
+	<h:outputText 
+	  value="#{messages.welcome['Spring']['JSF']}"/>
+
+<!SLIDE bullets incremental>
+
+# Object Message Source #
+
+* New <tt>ObjectMessageSource</tt> extends Spring <tt>MessageSource</tt>
+		
+*		@@@ java
+		String getMessage(Object object, 
+			Object[] args, Locale locale) 
+
+<!SLIDE small>
+
+# Example: #
+
+	@@@ java
+	package org.example;
+	public class ExampleObject {
+	}
+<p/>
+	@@@ xml
+	<h:outputText 
+		value="#{messages[exampleInstance]}"/>
+<p/>
+	@@@ properties
+	org.example.ExampleObject=example
+
+<!SLIDE small>
+
+	@@@ java
+	package org.springframework.springfaces.
+					traveladvisor.domain;
+	public enum TripType {
+		BUSINESS, 
+		COUPLES
+	}
+<p/>
+	@@@ xml
+	<p:selectOneMenu label="Trip Type" 
+			value="#{review.tripType}" effect="fade">
+		<s:selectItems/>
+	</p:selectOneMenu>
+<p/>
+	@@@ properties
+	org.springframework.springfaces.traveladvisor.
+		domain.TripType.BUSINESS=Business
+	org.springframework.springfaces.traveladvisor.
+		domain.TripType.COUPLES=Couples
+
+<!SLIDE small>
+
+	@@@ java
+	package org.example;
+	public class PersonName {
+		public String getFirst() {
+		}
+
+		public String getLast() {
+		}
+	}
+<p/>
+	@@@ properties
+	org.example.PersonName=Name is {first} {last}
+
 <!SLIDE subsection>
+
+# Loose Ends #
+
+<!SLIDE bullets incremental>
+
+# JSF Converters #
+
+* Spring Beans can be JSF Converters
+* ID of the bean is the name of the converter
+* Use <tt>@ForClass</tt> annotation to register for a class
+* Generic variant of <tt>Converter</tt> also available
+
+<!SLIDE small>
+
+	@@@ java
+	@Component
+	@ForClass
+	public class ExampleConverter implements 
+							Converter<MyClass> {
+
+	public MyClass getAsObject(FacesContext context, 
+			UIComponent component, String value) {
+		// ...
+	}
+
+	public String getAsString(FacesContext context, 
+			UIComponent component, MyClass value) {
+		// ...
+	}
+
+<!SLIDE bullets incremental>
+
+# MVC Converters #
+
+* JSF Converters will be used in MVC <tt>@Controller</tt>
+* Converters are located from the argument class
+* Or use <tt>@FacesConverterId</tt>
+
+<!SLIDE small>
+
+	@@@ java
+	@Controller
+	public class ConverterExampleController {
+		
+		@RequestMapping("/converter/facesbyid")
+		public Model facesById(
+			@RequestParam 
+			@FacesConverterId("byId") 
+			ConvertedObject value) {
+		}
+	}
+
+<!SLIDE bullets incremental>
+
+# Validators #
+
+* Spring Beans can be JSF Validators
+* ID of the bean is the name of the validator
+* Use <tt>@ForClass</tt> annotation to register for a class
+* Generic variant of <tt>Validator</tt> also available
+
+<!SLIDE small>
+
+	@@@ java
+	@Component
+	@ForClass
+	public class ExampleValidator implements 
+							Validator<MyClass> {
+		
+		public void validate(FacesContext context, 
+				UIComponent component, MyClass value) 
+				throws ValidatorException {
+			// ...
+		}
+	}
+
+<!SLIDE bullets incremental>
 
 # Exception Handling #
 
+* Spring beans can handle JSF Exceptions
+* Use <tt>ExceptionHandler</tt> interface instead of JSF Class
+* MVC <tt>@ExceptionHandler</tt> can also be used
+* Exception messages can be displayed using <tt>ObjectMessageSource</tt>
+
+<!SLIDE small>
+
+	@@@ java
+	@Component
+	@Order(100)
+	public class MyExceptionHandler implements 
+					ExceptionHandler<MyException> {
+		
+		boolean handle(MyException exception, 
+				  ExceptionQueuedEvent event) 
+				  throws Exception {
+
+			// if handled return true
+
+		}
+	}
+
+<!SLIDE small>
+
+	@@@ java
+	@Controller
+	public class ExampleController {
+		
+		// ... 
+
+		@ExceptionHandler
+		public String handleFacesView(MyException e) {
+			return "redirect:error";
+		}
+	}
+
+
+<!SLIDE small>
+
+	@@@ properties
+	# messages_en.properties
+	com.corp.product.exception.MyException=
+		My Localized Exception Message
+
 <!SLIDE subsection>
 
-# Conversion and Validation #
+# Summary #
 
+<!SLIDE bullets incremental>
+
+# Summary #
+
+* Get really deep JSF/Spring integration
+* Flexibility of Spring MVC
+* Convenience of JSF Libraries
+* Apache 2.0 Licensed
+
+<!SLIDE subsection>
+
+# Thank You #
+
+http://github.com/philwebb/springfaces/
