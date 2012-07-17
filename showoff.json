@@ -2,6 +2,6 @@
   "name": "Integrating Spring and JavaServer Faces",
   "description": "An in-depth look at deeper integration between Spring and JSF",
   "sections": [
-    {"section":"slides"},
+    {"section":"slides"}
   ]
 }
